@@ -1,9 +1,6 @@
-//exercise 4.1 
-//Write my own Tee implementation. Practice file IOs and the getopt() function. 
-//getopt() function is a bit complicated. But using it make a user friendly linux cmd line programm
 //============================================================================
 // Name        : Tee.cpp
-// Author      : Mr. X
+// Author      : YNG
 // Version     :
 // Copyright   : Your copyright notice
 // Description : Hello World in C++, Ansi-style
@@ -20,30 +17,24 @@
 #include <string>
 #include <fcntl.h>
 #include <sys/stat.h>
+#include "error_functions.h"
+
 using namespace std;
 
-void print_usage()
-{
-	std::string usage = "Put in the file name as the argument in order to create a new or replace the old file.\r\n"
-				"Use -a plus file name for appending to the file.";
-	std::cout << usage;
-}
 
 //the tee will output to stdout and the file,
 // as an argument as well as offering an option of -a file to append to file
-int main(int argc, char *argv[]) {
+int Tee(int argc, char *argv[])
+{
 	int opt = 0;
 	std::string file_path;
 	std::string usage = "Put in the file name as the argument in order to create a new or replace the old file.\r\n"
 			"Use -a plus file name for appending to the file.";
-	bool if_append = false;
+	auto if_append = false;
 	while((opt = getopt(argc, argv, ":a:")) != -1)
 	{
 		if(opt == '?' || opt == ':') // we have an unrecognizable argument
-		{
-			print_usage();
-			return 1;
-		}
+			usageErr(usage.c_str());
 		file_path = optarg;
 		if_append = true;
 	}
@@ -54,10 +45,7 @@ int main(int argc, char *argv[]) {
 		if(argc > optind) //we indeed have an extra file path there for std::out
 			file_path = argv[optind];
 		else
-		{
-			print_usage();
-			return 1;
-		}
+			usageErr(usage.c_str());
 	}
 
 	//open a file

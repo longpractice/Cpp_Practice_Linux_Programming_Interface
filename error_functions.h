@@ -41,3 +41,10 @@ static inline void usageErr(const char* format, Args... args)
 	std::cerr << std::flush;
 	throw std::runtime_error("cmd line args mistaken.");
 }
+
+
+
+
+
+
+#endif /* ERROR_FUNCTIONS_H_ */
