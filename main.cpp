@@ -5,26 +5,16 @@
  *      Author: YNG
  */
 
+#include "common.h"
 #include "Tee.h"
-#include <iostream>
-#include <ctype.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <errno.h>
-#include <unistd.h>
-#include <string>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include "error_functions.h"
+#include "large_file.h"
 
 
 int main(int argc, char *argv[])
 {
 	try
 	{
-		return Tee(argc, argv);
+		return large_file(argc, argv);
 	}
 	catch(std::runtime_error& e)
 	{
