@@ -34,7 +34,7 @@ int Tee(int argc, char *argv[])
 	while((opt = getopt(argc, argv, ":a:")) != -1)
 	{
 		if(opt == '?' || opt == ':') // we have an unrecognizable argument
-			usageErr(usage.c_str());
+			throw EUsage(usage);
 		file_path = optarg;
 		if_append = true;
 	}
@@ -45,7 +45,7 @@ int Tee(int argc, char *argv[])
 		if(argc > optind) //we indeed have an extra file path there for std::out
 			file_path = argv[optind];
 		else
-			usageErr(usage.c_str());
+			throw EUsage(usage);
 	}
 
 	//open a file
@@ -56,20 +56,13 @@ int Tee(int argc, char *argv[])
 		fd = open(file_path.c_str(), O_RDWR|O_APPEND, S_IRUSR|S_IWUSR); //we will append to end of the file
 
 	if(fd < 0)
-	{
-		perror("open() failed.");
-		return 1;
-	}
+		throw EWithNumber("open fd failed at file path: %s \r\n", file_path.c_str());
 	char ch;
 	while(std::cin >> ch)
 	{
 		ssize_t written = write(fd, (void*)&ch, 1);
 		if(written != 1)
-		{
-			perror("Write() failed.");
-			std::cout << "Written: " << written << std::endl;
-			return 1;
-		}
+			throw EWithNumber("Write to fd %d failed for file path: %s \r\n", fd, file_path.c_str());
 
 		std::cout << ch;
 	}
@@ -77,10 +70,7 @@ int Tee(int argc, char *argv[])
 
 	int close_res = close(fd);
 	if(close_res != 0)
-	{
-		perror("close() failed.");
-		return 1;
-	}
+		throw EWithNumber("close fd %d failed for file path: %s", fd, file_path);
 
 	return 0;
 }

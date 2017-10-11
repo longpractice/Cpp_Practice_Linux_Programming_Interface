@@ -26,8 +26,9 @@ int main(int argc, char *argv[])
 	{
 		return Tee(argc, argv);
 	}
-	catch(...)
+	catch(std::runtime_error& e)
 	{
+		std::cerr << std::flush << e.what() << std::endl << std::flush;
 		return(EXIT_FAILURE);
 	}
 }
