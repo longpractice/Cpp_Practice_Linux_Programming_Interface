@@ -8,13 +8,13 @@
 #include "common.h"
 #include "Tee.h"
 #include "large_file.h"
-
+#include "write_with_append_5_2.h"
 
 int main(int argc, char *argv[])
 {
 	try
 	{
-		return large_file(argc, argv);
+		write_with_append_5_2();
 	}
 	catch(std::runtime_error& e)
 	{
