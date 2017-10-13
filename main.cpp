@@ -10,11 +10,13 @@
 #include "large_file.h"
 #include "write_with_append_5_2.h"
 
+int atomic_append_5_3(int argc, char* argv[]);
+
 int main(int argc, char *argv[])
 {
 	try
 	{
-		write_with_append_5_2();
+		atomic_append_5_3(argc, argv);
 	}
 	catch(std::runtime_error& e)
 	{
