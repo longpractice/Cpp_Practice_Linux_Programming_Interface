@@ -16,12 +16,21 @@ int dup2_YNG(int, int);
 int verify_fd_dup();
 int many_writes_5_6();
 
-//The verification here indicates that they do share status and offset
+int Verify_bss_no_space_allowcated_6_1(int argc, char *argv[]);
+
+//This program when compiled as debug is 50656kb which is smaller than the uninitialized segment.
+// the code below will not affect this behavior since some will be in .bss.
+int some[10000000] = {};
+
+//the code below will make the program put some in .data making the exe much larger, 40050704 Bytes!
+//even though we have initialized only one element, all will be in .data
+int some[10000000] = {1};
+
 int main(int argc, char *argv[])
 {
 	try
 	{
-		many_writes_5_6();
+		Verify_bss_no_space_allowcated_6_1(argc, argv);
 
 	}
 	catch(std::runtime_error& e)
