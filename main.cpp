@@ -15,22 +15,42 @@ int dup_YNG(int);
 int dup2_YNG(int, int);
 int verify_fd_dup();
 int many_writes_5_6();
-
 int Verify_bss_no_space_allowcated_6_1(int argc, char *argv[]);
+int setenv_YNG_6_3(const char *name, const char *value, int overwrite);
+int unsetenv_YNG_6_3(const char *name);
 
-//This program when compiled as debug is 50656kb which is smaller than the uninitialized segment.
-// the code below will not affect this behavior since some will be in .bss.
-int some[10000000] = {};
-
-//the code below will make the program put some in .data making the exe much larger, 40050704 Bytes!
-//even though we have initialized only one element, all will be in .data
-int some[10000000] = {1};
+void print_env()
+{
+	char **ep;
+	for(ep = environ; *ep != NULL; ep++)
+		printf(*ep);
+	return;
+}
 
 int main(int argc, char *argv[])
 {
 	try
 	{
-		Verify_bss_no_space_allowcated_6_1(argc, argv);
+		std::cout << "Old Envs" << std::endl;
+		print_env();
+
+		std::cout << "\n\n\n\nNew Envs" << std::endl;
+		setenv_YNG_6_3("YNG", "TEST", 0);
+		print_env();
+
+		std::cout << "\n\n\nOverwrite YNG env" << std::endl;
+		setenv_YNG_6_3("YNG", "TEST_OVERWRITE", 1);
+		print_env();
+
+		std::cout << "\n\n\nonOverwrite YNG env" << std::endl;
+		setenv_YNG_6_3("YNG", "TEST_NONOVERWRITE", 0);
+		print_env();
+
+		std::cout << "\n\n\nUnset YNG env" << std::endl;
+		unsetenv_YNG_6_3("YNG");
+		print_env();
+
+		return 0;
 
 	}
 	catch(std::runtime_error& e)
