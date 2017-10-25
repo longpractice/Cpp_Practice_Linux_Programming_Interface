@@ -19,14 +19,13 @@ int Verify_bss_no_space_allowcated_6_1(int argc, char *argv[]);
 int setenv_YNG_6_3(const char *name, const char *value, int overwrite);
 int unsetenv_YNG_6_3(const char *name);
 int free_and_sbrk_7_1(int argc, char* argv[]);
-
+int same_number_twice_8_1();
 
 int main(int argc, char *argv[])
 {
 	try
 	{
-		free_and_sbrk_7_1(argc, argv);
-		return 0;
+		same_number_twice_8_1();
 
 	}
 	catch(std::runtime_error& e)
