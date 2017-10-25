@@ -10,6 +10,7 @@
 #include "common.h"
 #include <pwd.h>
 
+
 //according to practice 8.1, the following should give duplicated numbers.
 // But it did not give duplicated numbers indeed.
 

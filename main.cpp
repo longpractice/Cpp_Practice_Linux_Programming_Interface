@@ -9,7 +9,7 @@
 #include "Tee.h"
 #include "large_file.h"
 #include "write_with_append_5_2.h"
-
+#include <pwd.h>
 int atomic_append_5_3(int argc, char* argv[]);
 int dup_YNG(int);
 int dup2_YNG(int, int);
@@ -20,12 +20,16 @@ int setenv_YNG_6_3(const char *name, const char *value, int overwrite);
 int unsetenv_YNG_6_3(const char *name);
 int free_and_sbrk_7_1(int argc, char* argv[]);
 int same_number_twice_8_1();
+struct passwd * getpwnam_YNG(const char* name);
 
 int main(int argc, char *argv[])
 {
 	try
 	{
-		same_number_twice_8_1();
+		auto pw1 = getpwnam_YNG("games");
+		auto pw2 = getpwnam_YNG("root");
+		printf("passwords: %ld %ld\n", (long)(pw1->pw_uid),
+				(long)(pw2->pw_uid));
 
 	}
 	catch(std::runtime_error& e)
