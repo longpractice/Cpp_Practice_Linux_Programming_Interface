@@ -21,15 +21,13 @@ int unsetenv_YNG_6_3(const char *name);
 int free_and_sbrk_7_1(int argc, char* argv[]);
 int same_number_twice_8_1();
 struct passwd * getpwnam_YNG(const char* name);
+void time_overflow_10_1();
 
 int main(int argc, char *argv[])
 {
 	try
 	{
-		auto pw1 = getpwnam_YNG("games");
-		auto pw2 = getpwnam_YNG("root");
-		printf("passwords: %ld %ld\n", (long)(pw1->pw_uid),
-				(long)(pw2->pw_uid));
+		time_overflow_10_1();
 
 	}
 	catch(std::runtime_error& e)
