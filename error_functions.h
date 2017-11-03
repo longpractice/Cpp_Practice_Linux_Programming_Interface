@@ -17,7 +17,7 @@
 #include <memory>
 #include <errno.h>
 #include <sstream>
-
+#include <utility>
 //The C style function as indicated in the book
 /*
 static inline void usageErrC(const char* format, ...)
@@ -58,7 +58,7 @@ class EUsage: public std::runtime_error
 {
 public:
 	template<typename... Args>
-	EUsage(const char* format, Args... args):std::runtime_error(string_format(format, args...))
+	EUsage(const char* format, Args&&... args):std::runtime_error(string_format(format, std::forward<Args>(args)...))
 	{}
 
 	EUsage(std::string msg):std::runtime_error(msg){}
@@ -67,8 +67,8 @@ public:
 class EWithNumber:public std::runtime_error
 {
 public:
-	template<typename... Args>
-	EWithNumber(const char* format, Args... args):std::runtime_error(string_format(format, args...) + errorStrWithNo())
+	template<typename ...Args>
+	EWithNumber(const char* format, Args&& ...args):std::runtime_error(string_format(format, std::forward<Args>(args)...) + errorStrWithNo())
 	{
 
 	}
