@@ -23,12 +23,12 @@ int same_number_twice_8_1();
 struct passwd * getpwnam_YNG(const char* name);
 void time_overflow_10_1();
 void List_Process_IDs_And_Cmd_Name_for_Username_12_1(std::string name);
+void Get_Procs_Tree_12_2();
 int main(int argc, char *argv[])
 {
 	try
 	{
-		List_Process_IDs_And_Cmd_Name_for_Username_12_1("root");
-
+		Get_Procs_Tree_12_2();
 	}
 	catch(std::runtime_error& e)
 	{
