@@ -294,12 +294,76 @@ void Get_Procs_Tree_12_2()
 	std::cout << ss.str();
 
 	return;
+}
 
+//for a /proc/PID/fd/ dir, scan the dir and see if the certain file with file_path as name is opened
+bool If_Open_File(std::string dir_location, std::string file_path)
+{
+    DIR *dp = nullptr;
+	if(nullptr == (dp = opendir(dir_location.c_str())))
+	{
+		throw EWithNumber("Could not open the file %s", dir_location);
+	}
 
+	//the subdir with name of process ids
+	dirent *dptr = nullptr;
+	std::string wholeList;
 
+	while(nullptr != (dptr = readdir(dp)))
+	{
+		std::string link_name = dptr->d_name;
+		if(All(link_name, [](char ch){return ch <= '9' && ch >= '0';}))
+		{
+			std::string link_full_dir = dir_location + "/" + link_name;
+			char file_name_buf[500];
+			int size = readlink(link_full_dir.c_str(), file_name_buf, 500);
+			std::string linked_file_name;
+			std::copy(file_name_buf, file_name_buf + size, std::back_inserter(linked_file_name));
+			//see what represents the link
+			//std::cout << linked_file_name << std::endl;
+			if(linked_file_name == file_path)
+				return true;
+		}
+	}
 
+	return false;
 
 }
+
+std::vector<int> Get_Pids_opening_file_12_3(std::string file_path)
+{
+	std::string dir_location = "/proc/";
+
+    DIR *dp = nullptr;
+	if(nullptr == (dp = opendir(dir_location.c_str())))
+	{
+		throw EWithNumber("Could not open the file %s", dir_location);
+	}
+
+	//the subdir with name of process ids
+	dirent *dptr = nullptr;
+
+	std::vector<int> res;
+	while(nullptr !=  (dptr = readdir(dp)))
+	{
+		std::string dir_name = dptr->d_name;
+		//see if all dir name is number
+		if(All(dir_name, [](char ch){return ch <= '9' && ch >= '0';}))
+		{
+			int process_id = std::stoi(dir_name);
+			std::string fd_folder_full_dir = dir_location + dir_name + "/fd/";
+			if(If_Open_File(fd_folder_full_dir, file_path))
+			{
+				res.emplace_back(process_id);
+			}
+		}
+
+	}
+	return res;
+
+}
+
+
 
 
 
