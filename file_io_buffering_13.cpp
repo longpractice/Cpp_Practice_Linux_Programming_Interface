@@ -381,3 +381,45 @@ working together makes sure that the file stream goes to the physical media.
 
 */
 
+
+
+/*
+ *
+so if when run to stdout
+
+yng@ubuntu:~/eclipse-workspace/Practices_Linux_Programming/Release$ ./Practices_Linux_Programming
+If I had more time,
+I would have written you a shorter letter.
+
+
+so if run to file
+yng@ubuntu:~/eclipse-workspace/Practices_Linux_Programming/Release$ cat res.txt
+I would have written you a shorter letter.
+If I had more time,
+
+
+The reason for this is that the printf operation:
+When going to stdout, default to mode:
+	_IOLBF
+	Employ line-buffered I/O. This flag is the default for streams referring to
+	terminal devices. For output streams, data is buffered until a newline character is output (unless the buffer fills first). For input streams, data is read
+	a line at a time.
+So it will be printed out the terminal after it sees the line break;
+
+when going to file, default to mode:
+	_IOFBF
+	Employ fully buffered I/O. Data is read or written (via calls to read() or
+	write()) in units equal to the size of the buffer. This mode is the default for
+	streams referring to disk files.
+
+	So it will only be printed to file when the input buffer is exhausted or when the program exits.
+
+ *
+ *
+ */
+
+void different_effect_redirection_13_4()
+{
+	printf("If I had more time, \n");
+	write(STDOUT_FILENO, "I would have written you a shorter letter.\n", 43);
+}

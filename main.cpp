@@ -28,12 +28,14 @@ void Get_Procs_Tree_12_2();
 std::vector<int> Get_Pids_opening_file_12_3(std::string file_name);
 void time_stats_13_1(int argc, char *argv[]);
 void write_bytes_13_2(int argc, char *argv[]);
+void different_effect_redirection_13_4();
+
 
 int main(int argc, char *argv[])
 {
 	try
 	{
-		write_bytes_13_2(argc, argv);
+		different_effect_redirection_13_4();
 	}
 	catch(std::runtime_error& e)
 	{
