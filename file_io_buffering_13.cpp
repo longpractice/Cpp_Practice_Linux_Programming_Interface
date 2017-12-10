@@ -358,3 +358,26 @@ void write_bytes_13_2(int argc, char *argv[])
         throw std::runtime_error("Could not close.");
     return;
 }
+
+
+
+/*
+ *
+ *
+Exercise 13-3
+What is the effect of the following statements?
+fflush(fp);
+fsync(fileno(fp));
+
+Answer:
+fflush works on the stream buffer in user space, it transfer the buffer in user space to the system space
+fsync works on a lower level, it does not know the stream. It makes sure that the content in system space goes inside the physical media.
+For a further discussion: see  https://stackoverflow.com/questions/2340610/difference-between-fflush-and-fsync
+
+Therefore:
+ fflush(fp)
+ fsync(fileno(fp))
+working together makes sure that the file stream goes to the physical media.
+
+*/
+
