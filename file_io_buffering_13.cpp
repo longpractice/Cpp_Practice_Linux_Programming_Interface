@@ -8,7 +8,7 @@
 
 #include "common.h"
 #include <vector>
-
+#include <fstream>
 
 /*
  *without osync, the speed is ok, with higher buf size, better performance
@@ -422,4 +422,62 @@ void different_effect_redirection_13_4()
 {
 	printf("If I had more time, \n");
 	write(STDOUT_FILENO, "I would have written you a shorter letter.\n", 43);
+}
+
+
+
+
+void tail_13_5(int argc, char *argv[])
+{
+   EUsage err = EUsage{"exe [-n num] file"};
+   auto params_pack = Params{1, argc, argv};
+   if(params_pack.IfHelp())
+	   throw err;
+
+
+   std::string file_name;
+   int nlines_to_read{10};
+   if(params_pack.IfOption("-n"))
+   {
+	   if(params_pack.args.size() < 3)
+		   throw err;
+	   file_name = params_pack.args[2];
+	   auto nlines_to_read_tuple = params_pack.FindIntWithOption("-n");
+	   if(!std::get<0>(nlines_to_read_tuple) || !std::get<1>(nlines_to_read_tuple))
+		   throw err;
+	   nlines_to_read = std::get<2>(nlines_to_read_tuple);
+   }
+   else
+   {
+	   if(params_pack.args.size() < 1)
+		   throw err;
+	   file_name = params_pack.args[0];
+   }
+
+   //open the file
+   std::ifstream read_file{file_name};
+   if(!read_file.is_open())
+	   throw std::runtime_error{"Could not open file" + file_name};
+
+   //seek directly to the end of file
+
+   read_file.seekg(-1, read_file.end);
+   int size = read_file.tellg();
+   std::vector<char> buf;
+   buf.reserve(5000);
+   int nlines{};
+   for(int i = 1; i < size; i++)
+   {
+	   char ch;
+	   read_file.seekg(-i,read_file.end);
+	   read_file.get(ch);
+	   if(ch == '\n')
+		   ++nlines;
+	   if(nlines > nlines_to_read)
+		   break;
+	   buf.emplace_back(ch);
+   }
+
+   for(auto it = buf.rbegin(); it != buf.rend(); ++it)
+	   std::cout << *it;
 }

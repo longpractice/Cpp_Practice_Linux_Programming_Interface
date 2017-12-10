@@ -29,13 +29,13 @@ std::vector<int> Get_Pids_opening_file_12_3(std::string file_name);
 void time_stats_13_1(int argc, char *argv[]);
 void write_bytes_13_2(int argc, char *argv[]);
 void different_effect_redirection_13_4();
-
+void tail_13_5(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
 {
 	try
 	{
-		different_effect_redirection_13_4();
+		tail_13_5(argc, argv);
 	}
 	catch(std::runtime_error& e)
 	{
