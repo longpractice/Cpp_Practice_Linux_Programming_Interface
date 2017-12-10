@@ -27,12 +27,13 @@ void List_Process_IDs_And_Cmd_Name_for_Username_12_1(std::string name);
 void Get_Procs_Tree_12_2();
 std::vector<int> Get_Pids_opening_file_12_3(std::string file_name);
 void time_stats_13_1(int argc, char *argv[]);
+void write_bytes_13_2(int argc, char *argv[]);
 
 int main(int argc, char *argv[])
 {
 	try
 	{
-		time_stats_13_1(argc, argv);
+		write_bytes_13_2(argc, argv);
 	}
 	catch(std::runtime_error& e)
 	{

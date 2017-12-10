@@ -185,3 +185,176 @@ void time_stats_13_1(int argc, char *argv[])
 	return;
 
 }
+
+
+
+
+
+
+
+
+/* result shows that larger buffer size, within a certain range, increases the performance
+yng@ubuntu:~/eclipse-workspace/Practices_Linux_Programming/Release$ sudo ./compare_13_2.sh
+Exercise 13-2 compare bytes writing with different buf size and different file size
+==============================
+10m file size:
+1024 buffer size
+./compare_13_2.sh: line 14: fg: no job control
+
+real	0m0.027s
+user	0m0.000s
+sys		0m0.008s
+
+
+2048 buffer size
+./compare_13_2.sh: line 14: fg: no job control
+
+real	0m0.013s
+user	0m0.000s
+sys		0m0.008s
+
+
+4096 buffer size
+./compare_13_2.sh: line 14: fg: no job control
+
+real	0m0.025s
+user	0m0.000s
+sys		0m0.004s
+
+
+8192 buffer size
+./compare_13_2.sh: line 14: fg: no job control
+
+real	0m0.019s
+user	0m0.000s
+sys		0m0.012s
+
+
+16384 buffer size
+./compare_13_2.sh: line 14: fg: no job control
+
+real	0m0.023s
+user	0m0.004s
+sys		0m0.004s
+
+
+==============================
+==============================
+100m file size:
+1024 buffer size
+./compare_13_2.sh: line 31: fg: no job control
+
+real	0m0.030s
+user	0m0.000s
+sys	0m0.016s
+
+
+2048 buffer size
+./compare_13_2.sh: line 31: fg: no job control
+
+real	0m0.016s
+user	0m0.000s
+sys	0m0.008s
+
+
+4096 buffer size
+./compare_13_2.sh: line 31: fg: no job control
+
+real	0m0.035s
+user	0m0.000s
+sys	0m0.008s
+
+
+8192 buffer size
+./compare_13_2.sh: line 31: fg: no job control
+
+real	0m0.028s
+user	0m0.000s
+sys	0m0.012s
+
+
+16384 buffer size
+./compare_13_2.sh: line 31: fg: no job control
+
+real	0m0.034s
+user	0m0.000s
+sys	0m0.008s
+
+
+ */
+
+
+
+
+
+
+
+
+
+/* write_bytes.c
+
+   Write bytes to a file. (A simple program for file I/O benchmarking.)
+
+   Usage: write_bytes file num-bytes buf-size
+
+   Writes 'num-bytes' bytes to 'file', using a buffer size of 'buf-size'
+   for each write().
+
+   If compiled with -DUSE_O_SYNC, open the file with the O_SYNC flag,
+   so that all data and metadata changes are flushed to the disk.
+
+   If compiled with -DUSE_FDATASYNC, perform an fdatasync() after each write,
+   so that data--and possibly metadata--changes are flushed to the disk.
+
+   If compiled with -DUSE_FSYNC, perform an fsync() after each write, so that
+   data and metadata are flushed to the disk.
+*/
+
+void write_bytes_13_2(int argc, char *argv[])
+{
+    size_t bufSize, numBytes, thisWrite, totWritten;
+    char *buf;
+    int fd, openFlags;
+
+    if (argc != 4 || strcmp(argv[1], "--help") == 0)
+        throw EUsage("%s file num-bytes buf-size\n", argv[0]);
+
+    numBytes = atoi(argv[2]);
+    bufSize = atoi(argv[3]);
+    std::vector<char> buf_vec(bufSize);
+    buf = buf_vec.data();
+
+    if (buf == NULL)
+        throw std::runtime_error("malloc");
+
+    openFlags = O_CREAT | O_WRONLY;
+
+#if defined(USE_O_SYNC) && defined(O_SYNC)
+    openFlags |= O_SYNC;
+#endif
+
+    fd = open(argv[1], openFlags, S_IRUSR | S_IWUSR);
+    if (fd == -1)
+        throw std::runtime_error("open");
+
+    for (totWritten = 0; totWritten < numBytes; totWritten += thisWrite)
+    {
+        thisWrite = std::min(bufSize, numBytes - totWritten);
+
+        if (write(fd, buf, thisWrite) != thisWrite)
+        	std::runtime_error("partial/failed write");
+
+#ifdef USE_FSYNC
+        if (fsync(fd))
+            errExit("fsync");
+#endif
+#ifdef USE_FDATASYNC
+        if (fdatasync(fd))
+            errExit("fdatasync");
+#endif
+    }
+
+    if (close(fd) == -1)
+        throw std::runtime_error("Could not close.");
+    return;
+}
